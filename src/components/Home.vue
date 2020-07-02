@@ -9,26 +9,31 @@
     <b-container fluid>
       <b-row class="mb-5">
         <b-col>
-          Your time zone is {{clientTimezone}}
-          <h1 class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime" :showCopyIcon="false"/></h1>
-          <h1 v-if="clientTimezone" class="currentTime"><ISO8601Timestamp :timestamp="currentTime" :timezone="clientTimezone" :showCopyIcon="false"/></h1>
+          <div v-if="clientTimezone">
+            Your time zone is {{clientTimezone}}
+            <h1 class="currentTime"><ISO8601Timestamp :timestamp="currentTime" :timezone="clientTimezone" :showCopyIcon="false"/></h1>
+          </div>
+          <h1 v-else class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime" :showCopyIcon="false"/></h1>
         </b-col>
       </b-row>
       <b-row>
-        <b-col md="8" lg="6" offset-md="2" offset-lg="3">
+        <b-col md="8" lg="8" offset-md="2" offset-lg="2">
           <b-form-input v-model="userProvidedDate" placeholder="Paste an ISO8601 date" size="lg"></b-form-input>
-          <table v-if="userProvidedDateInTimeZones" class="table mt-3 convertedTimes">
-            <tr>
-              <th></th>
-              <th>Local Time</th>
-              <th>Offset ISO8601</th>
-            </tr>
-            <tr v-for="timezone in userProvidedDateInTimeZones" :key="timezone.name">
-              <th class="timezone"><b-icon v-if="clientTimezone === timezone.name" icon="flag-fill" />{{timezone.name}} <cite>{{timezone.offset}}</cite></th>
-              <td>{{timezone.localReadableTime}}</td>
-              <td><ISO8601Timestamp :timestamp="userProvidedDate" :timezone="timezone.name"/></td>
-            </tr>
-          </table>
+          <div v-if="userProvidedDateInTimeZones">
+              <h1 class="m-4"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h1>
+              <table v-if="userProvidedDateInTimeZones" class="table mt-3 convertedTimes">
+                <tr>
+                  <th><b-form-select v-model="selectedTimezoneGroup" :options="timezoneGroups"></b-form-select></th>
+                  <th>Local Time</th>
+                  <th>Offset ISO8601</th>
+                </tr>
+                <tr v-for="timezone in userProvidedDateInTimeZones" :key="timezone.name">
+                  <th class="timezone"><b-icon v-if="clientTimezone === timezone.name" icon="flag-fill" />{{timezone.name}} <cite>{{timezone.offset}}, {{timezone.abbreviation}}, {{timezone.isDSTShifted}}</cite></th>
+                  <td>{{timezone.localReadableTime}}</td>
+                  <td><ISO8601Timestamp :timestamp="userProvidedDate" :timezone="timezone.name"/></td>
+                </tr>
+              </table>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -38,6 +43,7 @@
 <script>
 import moment from 'moment-timezone'
 import ISO8601Timestamp from './ISO8601Timestamp'
+import countries from 'i18n-iso-countries'
 
 export default {
   name: 'Home',
@@ -46,6 +52,7 @@ export default {
   },
   data(){
     return {
+      selectedTimezoneGroup: 'US-simple',
       clientTimezone: moment.tz.guess(),
       currentTime: null,
       userProvidedDate: null,
@@ -53,44 +60,83 @@ export default {
       moment
     }
   },
-  mounted(){
-    this.currentTime = new Date().toISOString()
-    setInterval( () => {
-      this.currentTime = new Date().toISOString()
-    }, 1000 )
+  computed: {
+    timezoneGroups(){
+      const momentCountries = moment.tz.countries().map( countryCode => {
+        return {
+          value: countryCode,
+          text: countries.getName( countryCode, 'en' )
+        }
+      })
+
+      const groups = [{ value: 'US-simple', text: 'United States of America (Simple)' }, ...momentCountries]
+      groups.sort( (a, b) => {
+        const countryA = a.text.toUpperCase()
+        const countryB = b.text.toUpperCase()
+        if( countryA > countryB ) return 1
+        if( countryA < countryB ) return -1
+        return 0
+      })
+      return groups
+    },
+    timeszonesInGroup(){
+      if( !this.selectedTimezoneGroup ) return null
+
+      if( this.selectedTimezoneGroup === 'US-simple' ){
+        return ['Etc/UTC', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Phoenix', 'America/Los_Angeles'];
+      }else{
+        return ['Etc/UTC', ...moment.tz.zonesForCountry( this.selectedTimezoneGroup )]
+      }
+    }
   },
   watch: {
-    userProvidedDate( value ){
-      const m = moment( value );
+    userProvidedDate(){
+      this.udpateTable()
+    },
+    selectedTimezoneGroup(){
+      this.udpateTable()
+    }
+  },
+  methods: {
+    udpateTable(){
+      const m = moment( this.userProvidedDate );
 
       if( !m.isValid() ){
         this.userProvidedDateInTimeZones = null
         return
       }
 
-      const timezones = ['Etc/UTC', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles'] //moment.tz.zonesForCountry('US', true)
-
       const convertedTimes = {};
-      for( let timezone of timezones ){
+      for( let timezone of this.timeszonesInGroup ){
+        const mInTimezone = m.tz(timezone);
 
         convertedTimes[timezone] = {
           name: timezone,
-          offset: m.tz(timezone).format('Z'),
-          localIso8601Time: m.tz(timezone).format(),
-          utcIso8601Time: m.tz(timezone).toISOString(),
-          localReadableTime: m.tz(timezone).format('lll')
+          offset: mInTimezone.format('Z'),
+          localIso8601Time: mInTimezone.format(),
+          utcIso8601Time: mInTimezone.toISOString(),
+          localReadableTime: mInTimezone.format('lll'),
+          abbreviation: mInTimezone.zoneAbbr(),
+          isDSTShifted: mInTimezone.isDST()
         };
       }
 
       this.userProvidedDateInTimeZones = convertedTimes
     }
-  }
+  },
+  mounted(){
+    this.currentTime = new Date().toISOString()
+    this.userProvidedDate = new Date().toISOString()
+    setInterval( () => {
+      this.currentTime = new Date().toISOString()
+    }, 1000 )
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .currentTime {
-  font-size: 80px;
+  font-size: 3rem;
 }
 
 .timezone {

@@ -5,6 +5,7 @@ import {
   IconsPlugin,
   BVToastPlugin,
   FormInputPlugin,
+  FormSelectPlugin,
   BIcon,
   BIconBoxArrowUpRight,
   BIconFlagFill,
@@ -13,12 +14,16 @@ import {
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import countries from 'i18n-iso-countries'
+countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
+
 Vue.config.productionTip = false
 
 Vue.use( LayoutPlugin )
 Vue.use( IconsPlugin )
 Vue.use( BVToastPlugin )
 Vue.use( FormInputPlugin )
+Vue.use( FormSelectPlugin )
 
 Vue.component('BIcon', BIcon)
 Vue.component('BIconArrowUp', BIconBoxArrowUpRight)

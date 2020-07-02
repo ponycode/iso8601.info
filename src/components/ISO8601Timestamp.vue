@@ -62,8 +62,7 @@ export default {
         document.execCommand('copy')
         document.body.removeChild(el)
 
-        this.$bvToast.toast(`This is toast number`, {
-          title: 'BootstrapVue Toast',
+        this.$bvToast.toast(`'${this.convertedTimestamp}' copied to clipboard.`, {
           autoHideDelay: 3000,
           variant: 'primary',
           toaster: 'b-toaster-top-center',
