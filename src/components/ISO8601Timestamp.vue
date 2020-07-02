@@ -4,7 +4,7 @@
       <span class="t">T</span>
       <span class="time">{{time}}</span>
       <span class="timezone">{{printableTimezone}}</span>
-      <b-icon class="clipboard" icon="clipboard" @click="copy" />
+      <b-icon v-if="showCopyIcon" class="clipboard" icon="clipboard" @click="copy" />
   </span>
 </template>
 
@@ -22,6 +22,10 @@ export default {
           type: String,
           required: false,
           default: 'Z'
+      },
+      showCopyIcon: {
+          type: Boolean,
+          default: true
       }
   },
   computed: {
@@ -41,11 +45,30 @@ export default {
       printableTimezone(){
           if( this.timezone === 'Z' ) return  'Z'
           return this.moment.format('Z') // convert to -XX:XX
+      },
+      convertedTimestamp(){
+          return this.moment.toISOString( true )
       }
   },
   methods: {
       copy(){
-          alert('copy')
+        const el = document.createElement('textarea')
+        el.value = this.convertedTimestamp
+        el.setAttribute('readonly', '')
+        el.style.position = 'absolute'
+        el.style.left = '-9999px'
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
+
+        this.$bvToast.toast(`This is toast number`, {
+          title: 'BootstrapVue Toast',
+          autoHideDelay: 3000,
+          variant: 'primary',
+          toaster: 'b-toaster-top-center',
+          append: false
+        })
       }
   }
 }
@@ -101,7 +124,7 @@ export default {
     padding: 0 0.2em;
     border-radius: .2em;
     transition: all 0.2s;
-    
+
     &:hover {
         background-color: rgba(235, 179, 131, 0.3);
     }

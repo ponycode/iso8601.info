@@ -3,18 +3,18 @@
     <b-row class="mb-5">
       <b-col>
         Your time zone is {{clientTimezone}}
-        <h1 class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime"/></h1>
-        <h1 v-if="clientTimezone" class="currentTime"><ISO8601Timestamp :timestamp="currentTime" :timezone="clientTimezone"/></h1>
+        <h1 class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime" :showCopyIcon="false"/></h1>
+        <h1 v-if="clientTimezone" class="currentTime"><ISO8601Timestamp :timestamp="currentTime" :timezone="clientTimezone" :showCopyIcon="false"/></h1>
       </b-col>
     </b-row>
     <b-row>
       <b-col md="8" lg="6" offset-md="2" offset-lg="3">
-        <b-form-input v-model="userProvidedDate" placeholder="Paste an ISO8601 date"></b-form-input>
+        <b-form-input v-model="userProvidedDate" placeholder="Paste an ISO8601 date" size="lg"></b-form-input>
         <table v-if="userProvidedDateInTimeZones" class="table mt-3 convertedTimes">
           <tr>
             <th></th>
             <th>Local Time</th>
-            <th>Local ISO8601</th>
+            <th>Offset ISO8601</th>
           </tr>
           <tr v-for="timezone in userProvidedDateInTimeZones" :key="timezone.name">
             <th class="timezone"><b-icon v-if="clientTimezone === timezone.name" icon="flag-fill" />{{timezone.name}} <cite>{{timezone.offset}}</cite></th>
@@ -60,7 +60,7 @@ export default {
         return
       }
 
-      const timezones = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles'] //moment.tz.zonesForCountry('US', true)
+      const timezones = ['Etc/UTC', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles'] //moment.tz.zonesForCountry('US', true)
 
       const convertedTimes = {};
       for( let timezone of timezones ){
@@ -75,19 +75,6 @@ export default {
       }
 
       this.userProvidedDateInTimeZones = convertedTimes
-    }
-  },
-  methods: {
-    copy( element ){
-        element.select();
-
-        let copied;
-        try{
-            copied = document.execCommand('copy');
-        }catch(ex){
-            copied = false;  
-        }
-        return copied;
     }
   }
 }
