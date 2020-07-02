@@ -12,7 +12,7 @@ const writeFile = util.promisify( fs.writeFile );
 
         console.log('Building...');
         await execa('npm', ['run', 'build']);
-        await writeFile( 'CNAME', 'iso8601.info' );
+        await writeFile( 'dist/CNAME', 'iso8601.info' ); // add this to the dist output so we don't lose the custom domain on deploy
 
         await execa('git', ['--work-tree', 'dist', 'add', '--all']);
         await execa('git', ['--work-tree', 'dist', 'commit', '-m', 'gh-pages']);
