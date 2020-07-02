@@ -2,6 +2,8 @@
 
 const execa = require('execa');
 const fs = require('fs');
+const util = require('util');
+const writeFile = util.promisify( fs.writeFile );
 
 (async () => {
     try {
@@ -10,6 +12,7 @@ const fs = require('fs');
 
         console.log('Building...');
         await execa('npm', ['run', 'build']);
+        await writeFile( 'CNAME', 'iso8601.info' );
 
         await execa('git', ['--work-tree', 'dist', 'add', '--all']);
         await execa('git', ['--work-tree', 'dist', 'commit', '-m', 'gh-pages']);
