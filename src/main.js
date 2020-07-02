@@ -6,6 +6,7 @@ import {
   BVToastPlugin,
   FormInputPlugin,
   FormSelectPlugin,
+  TooltipPlugin,
   BIcon,
   BIconBoxArrowUpRight,
   BIconFlagFill,
@@ -25,6 +26,7 @@ Vue.use( IconsPlugin )
 Vue.use( BVToastPlugin )
 Vue.use( FormInputPlugin )
 Vue.use( FormSelectPlugin )
+Vue.use( TooltipPlugin )
 
 Vue.component('BIcon', BIcon)
 Vue.component('BIconArrowUp', BIconBoxArrowUpRight)

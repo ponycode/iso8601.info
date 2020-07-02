@@ -1,9 +1,9 @@
 <template>
   <span v-if="timestamp" class="timestamp mb-2">
-      <span class="date">{{date}}</span>
+      <span class="date" v-b-tooltip.hover :title="dateTooltip">{{date}}</span>
       <span class="t">T</span>
-      <span class="time">{{time}}</span>
-      <span class="timezone">{{printableTimezone}}</span>
+      <span class="time" v-b-tooltip.hover :title="timeTooltip">{{time}}</span>
+      <span class="timezone" v-b-tooltip.hover :title="timezoneTooltip">{{printableTimezone}}</span>
       <b-icon v-if="showCopyIcon" class="clipboard" icon="clipboard" @click="copy" />
   </span>
 </template>
@@ -30,17 +30,29 @@ export default {
   },
   computed: {
       moment(){
-          const m = moment( this.timestamp )
-          if( !m.isValid() ) return null
-          return this.timezone !== 'Z' ? m.tz( this.timezone ) : m.utc()
+        const m = moment( this.timestamp )
+        if( !m.isValid() ) return null
+        return this.timezone !== 'Z' ? m.tz( this.timezone ) : m.utc()
       },
       date(){
-          if( !this.moment ) return null
-          return this.moment.format('YYYY-MM-DD')
+        if( !this.moment ) return null
+        return this.moment.format('YYYY-MM-DD')
+      },
+      dateTooltip(){
+        return this.moment.format('MMMM D, YYYY')
       },
       time(){
-          if( !this.timestamp ) return null
-         return this.moment.format('HH:mm:ss.SSS')
+        if( !this.timestamp ) return null
+        return this.moment.format('HH:mm:ss.SSS')
+      },
+      timeTooltip(){
+        return this.moment.format('h:mm A')
+      },
+      timezoneTooltip(){
+        const fullTimezoneName = this.timezone === 'Z' ? 'Etc/Utc' : this.timezone
+        const timezoneOffset = this.moment.format('Z')
+        const abbreviation = this.moment.zoneAbbr()
+        return `${fullTimezoneName}, ${abbreviation}, ${timezoneOffset}`
       },
       printableTimezone(){
           if( this.timezone === 'Z' ) return  'Z'
@@ -98,6 +110,7 @@ export default {
     padding: 0 0.2em;
     border-radius: .2em;
     transition: all 0.2s;
+    margin-right: 4px;
 
     &:hover {
          background-color: rgba(0, 150, 192, 0.3);
@@ -111,6 +124,7 @@ export default {
     padding: 0 0.2em;
     border-radius: .2em;
     transition: all 0.2s;
+    margin-right: 4px;
 
     &:hover {
          background-color: rgba(0, 179, 131, 0.3);
@@ -124,12 +138,14 @@ export default {
     padding: 0 0.2em;
     border-radius: .2em;
     transition: all 0.2s;
+    margin-right: 4px;
 
     &:hover {
         background-color: rgba(235, 179, 131, 0.3);
     }
 }
 
+/*
 @media (prefers-color-scheme: dark) {
     .date{
         color: rgba(237, 237, 237, 1.0);
@@ -143,6 +159,12 @@ export default {
         color: rgba(237, 237, 237, 1.0);
         background-color: rgba(235, 179, 131, 0.1);
     }
+    .t, .z {
+        color: rgba(237, 237, 237, 1.0);
+        opacity: 0.3;
+        margin: 0 .1em;
+    }
 }
+*/
 
 </style>

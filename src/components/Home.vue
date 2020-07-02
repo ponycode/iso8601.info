@@ -167,10 +167,10 @@ export default {
   width: 40px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .convertedTimes {
-    color: rgba(237, 237, 237, 1.0);
-  }
-}
+// @media (prefers-color-scheme: dark) {
+//   .convertedTimes {
+//     color: rgba(237, 237, 237, 1.0);
+//   }
+// }
 
 </style>
