@@ -13,6 +13,7 @@ import {
 } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './main.scss'
 
 import countries from 'i18n-iso-countries'
 countries.registerLocale(require("i18n-iso-countries/langs/en.json"));

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1 class="title">ISO8601.info</h1>
     <a class="githubLogo" href="https://github.com/ponycode/iso8601.info" title="View the source code for this project on GitHub">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <defs/>
@@ -11,7 +12,7 @@
         <b-col>
           <div v-if="clientTimezone">
             Your time zone is {{clientTimezone}}
-            <h1 class="currentTime"><ISO8601Timestamp :timestamp="currentTime" :timezone="clientTimezone" :showCopyIcon="false"/></h1>
+            <h1 class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime" :timezone="clientTimezone" :showCopyIcon="false"/></h1>
           </div>
           <h1 v-else class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime" :showCopyIcon="false"/></h1>
         </b-col>
@@ -25,11 +26,13 @@
                 <tr>
                   <th><b-form-select v-model="selectedTimezoneGroup" :options="timezoneGroups"></b-form-select></th>
                   <th>Local Time</th>
+                  <th>DST active</th>
                   <th>Offset ISO8601</th>
                 </tr>
                 <tr v-for="timezone in userProvidedDateInTimeZones" :key="timezone.name">
-                  <th class="timezone"><b-icon v-if="clientTimezone === timezone.name" icon="flag-fill" />{{timezone.name}} <cite>{{timezone.offset}}, {{timezone.abbreviation}}, {{timezone.isDSTShifted}}</cite></th>
+                  <th class="timezone"><b-icon v-if="clientTimezone === timezone.name" icon="flag-fill" />{{timezone.name}} <cite>{{timezone.offset}}</cite></th>
                   <td>{{timezone.localReadableTime}}</td>
+                  <td>{{timezone.isDSTActive ? 'Yes' : 'No'}}</td>
                   <td><ISO8601Timestamp :timestamp="userProvidedDate" :timezone="timezone.name"/></td>
                 </tr>
               </table>
@@ -115,9 +118,9 @@ export default {
           offset: mInTimezone.format('Z'),
           localIso8601Time: mInTimezone.format(),
           utcIso8601Time: mInTimezone.toISOString(),
-          localReadableTime: mInTimezone.format('lll'),
+          localReadableTime: mInTimezone.format('lll') + ' ' + mInTimezone.zoneAbbr(),
           abbreviation: mInTimezone.zoneAbbr(),
-          isDSTShifted: mInTimezone.isDST()
+          isDSTActive: mInTimezone.isDST()
         };
       }
 
@@ -148,6 +151,12 @@ export default {
   }
 }
 
+.title{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
 .githubLogo {
   position: absolute;
   top: 10px;
@@ -157,4 +166,11 @@ export default {
   height: 40px;
   width: 40px;
 }
+
+@media (prefers-color-scheme: dark) {
+  .convertedTimes {
+    color: rgba(237, 237, 237, 1.0);
+  }
+}
+
 </style>

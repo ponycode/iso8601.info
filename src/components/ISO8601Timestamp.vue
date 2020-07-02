@@ -63,9 +63,10 @@ export default {
         document.body.removeChild(el)
 
         this.$bvToast.toast(`'${this.convertedTimestamp}' copied to clipboard.`, {
+          title:'Copied to clipboard',
           autoHideDelay: 3000,
           variant: 'primary',
-          toaster: 'b-toaster-top-center',
+          toaster: 'b-toaster-bottom-center',
           append: false
         })
       }
@@ -128,4 +129,20 @@ export default {
         background-color: rgba(235, 179, 131, 0.3);
     }
 }
+
+@media (prefers-color-scheme: dark) {
+    .date{
+        color: rgba(237, 237, 237, 1.0);
+        background-color: rgba(0, 150, 192, 0.1);
+    }
+    .time{
+        color: rgba(237, 237, 237, 1.0);
+        background-color: rgba(0, 179, 131, 0.1);
+    }
+    .timezone{
+        color: rgba(237, 237, 237, 1.0);
+        background-color: rgba(235, 179, 131, 0.1);
+    }
+}
+
 </style>
