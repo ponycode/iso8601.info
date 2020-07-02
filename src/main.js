@@ -6,7 +6,9 @@ import {
   BVToastPlugin,
   FormInputPlugin,
   BIcon,
-  BIconBoxArrowUpRight
+  BIconBoxArrowUpRight,
+  BIconFlagFill,
+  BIconClipboard
 } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -20,6 +22,8 @@ Vue.use( FormInputPlugin )
 
 Vue.component('BIcon', BIcon)
 Vue.component('BIconArrowUp', BIconBoxArrowUpRight)
+Vue.component('BIconFlagFill', BIconFlagFill)
+Vue.component('BIconClipboard', BIconClipboard)
 
 new Vue({
   render: h => h(App),

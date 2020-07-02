@@ -1,24 +1,25 @@
 <template>
-  <b-container>
+  <b-container fluid>
     <b-row class="mb-5">
       <b-col>
         Your time zone is {{clientTimezone}}
-        <h1 class="currentTime">{{currentTime}}</h1>
+        <h1 class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime"/></h1>
+        <h1 v-if="clientTimezone" class="currentTime"><ISO8601Timestamp :timestamp="currentTime" :timezone="clientTimezone"/></h1>
       </b-col>
     </b-row>
     <b-row>
-      <b-col>
+      <b-col md="8" lg="6" offset-md="2" offset-lg="3">
         <b-form-input v-model="userProvidedDate" placeholder="Paste an ISO8601 date"></b-form-input>
-        <table v-if="userProvidedDateInTimeZones" class="mt-3 convertedTimes">
+        <table v-if="userProvidedDateInTimeZones" class="table mt-3 convertedTimes">
           <tr>
-            <th>Timezone</th>
+            <th></th>
             <th>Local Time</th>
             <th>Local ISO8601</th>
           </tr>
-          <tr v-for="timezone in userProvidedDateInTimeZones" :key="timezone.name" :class="{ 'current': clientTimezone === timezone.name }">
-            <td>{{timezone.name}}, {{timezone.offset}}</td>
+          <tr v-for="timezone in userProvidedDateInTimeZones" :key="timezone.name">
+            <th class="timezone"><b-icon v-if="clientTimezone === timezone.name" icon="flag-fill" />{{timezone.name}} <cite>{{timezone.offset}}</cite></th>
             <td>{{timezone.localReadableTime}}</td>
-            <td>{{timezone.localIso8601Time}}</td>
+            <td><ISO8601Timestamp :timestamp="userProvidedDate" :timezone="timezone.name"/></td>
           </tr>
         </table>
       </b-col>
@@ -28,9 +29,13 @@
 
 <script>
 import moment from 'moment-timezone'
+import ISO8601Timestamp from './ISO8601Timestamp'
 
 export default {
   name: 'Home',
+  components: {
+    ISO8601Timestamp
+  },
   data(){
     return {
       clientTimezone: moment.tz.guess(),
@@ -41,18 +46,24 @@ export default {
     }
   },
   mounted(){
-    this.currentTime = new Date().toISOString();
+    this.currentTime = new Date().toISOString()
     setInterval( () => {
-      this.currentTime = new Date().toISOString();
-    }, 1000 );
+      this.currentTime = new Date().toISOString()
+    }, 1000 )
   },
   watch: {
     userProvidedDate( value ){
-      const timezones = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles']; //moment.tz.zonesForCountry('US', true);
+      const m = moment( value );
+
+      if( !m.isValid() ){
+        this.userProvidedDateInTimeZones = null
+        return
+      }
+
+      const timezones = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles'] //moment.tz.zonesForCountry('US', true)
 
       const convertedTimes = {};
       for( let timezone of timezones ){
-        const m = moment( value );
 
         convertedTimes[timezone] = {
           name: timezone,
@@ -63,7 +74,7 @@ export default {
         };
       }
 
-      this.userProvidedDateInTimeZones = convertedTimes;
+      this.userProvidedDateInTimeZones = convertedTimes
     }
   },
   methods: {
@@ -87,19 +98,12 @@ export default {
   font-size: 80px;
 }
 
-.convertedTimes {
-  th {
-    padding: 6px 12px;
-    text-align: left;
-  }
+.timezone {
+  text-align: right;
 
-  td {
-    padding: 6px 12px;
-    text-align: left;
-  }
-
-  tr.current {
-    background-color: rgba(203, 242, 242, 0.5);
+  cite {
+    color: #666;
+    font-weight: 100;
   }
 }
 </style>
