@@ -15,13 +15,23 @@
             <h1 class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime" :timezone="clientTimezone" :showCopyIcon="false"/></h1>
           </div>
           <h1 v-else class="currentTime mt-3"><ISO8601Timestamp :timestamp="currentTime" :showCopyIcon="false"/></h1>
+          <hr class="mt-5 mb-5"/>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="8" lg="8" offset-md="2" offset-lg="2">
-          <b-form-input v-model="userProvidedDate" placeholder="Paste an ISO8601 date" size="lg"></b-form-input>
-          <div v-if="userProvidedDateInTimeZones">
-              <h1 class="m-4"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h1>
+
+          <b-row>
+            <b-col>
+              <b-form-input v-model="userProvidedDate" placeholder="Paste an ISO8601 date" size="lg"></b-form-input>
+            </b-col>
+            <b-col>
+              <h3 class="mt-2"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h3>
+            </b-col>
+          </b-row>
+
+          <b-row v-if="userProvidedDateInTimeZones">
+            <b-col>
               <table v-if="userProvidedDateInTimeZones" class="table mt-3 convertedTimes">
                 <tr>
                   <th><b-form-select v-model="selectedTimezoneGroup" :options="timezoneGroups"></b-form-select></th>
@@ -36,7 +46,9 @@
                   <td><ISO8601Timestamp :timestamp="userProvidedDate" :timezone="timezone.name"/></td>
                 </tr>
               </table>
-          </div>
+            </b-col>
+          </b-row>
+
         </b-col>
       </b-row>
     </b-container>
@@ -155,6 +167,7 @@ export default {
   position: absolute;
   top: 10px;
   left: 10px;
+  font-weight: 100;
 }
 
 .githubLogo {
