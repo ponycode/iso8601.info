@@ -13,7 +13,7 @@
     "bootstrap-vue": "^2.15.0",
     "core-js": "^3.6.5",
     "i18n-iso-countries": "^6.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.31",
     "sass": "^1.26.9",
     "sass-loader": "^9.0.0",
