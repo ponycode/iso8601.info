@@ -14,7 +14,7 @@
     "core-js": "^3.6.5",
     "i18n-iso-countries": "^6.0.0",
     "moment": "^2.27.0",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "sass": "^1.26.9",
     "sass-loader": "^9.0.0",
     "vue": "^2.6.11"
