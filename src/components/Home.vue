@@ -27,7 +27,7 @@
             </b-col>
             <b-col>
               <h3 class="mt-2"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h3>
-              <small v-if="userProvidedDateEpoch">{{userProvidedDateEpoch}}</small>
+              <small v-if="userProvidedDateEpoch">UNIX EPOCH: {{userProvidedDateEpoch}}</small>
             </b-col>
           </b-row>
 
