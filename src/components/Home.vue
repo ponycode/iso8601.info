@@ -27,7 +27,7 @@
             </b-col>
             <b-col>
               <h3 class="mt-2"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h3><br/>
-              <small>{{Math.floor(userProvidedDate.getTime() / 1000)}}</small>
+              <small v-if="userProvidedDateEpoch">{{userProvidedDateEpoch}}</small>
             </b-col>
           </b-row>
 
@@ -77,6 +77,10 @@ export default {
     }
   },
   computed: {
+    userProvidedDateEpoch(){
+      if (!this.userProvidedDate) return undefined
+      return Math.floor(userProvidedDate.getTime() / 1000)
+    },
     timezoneGroups(){
       const momentCountries = moment.tz.countries().map( countryCode => {
         return {
