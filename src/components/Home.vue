@@ -26,7 +26,7 @@
               <b-form-input v-model="userProvidedDate" placeholder="Paste an ISO8601 date" size="lg"></b-form-input>
             </b-col>
             <b-col>
-              <h3 class="mt-2"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h3><br/>
+              <h3 class="mt-2"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h3>
               <small v-if="userProvidedDateEpoch">{{userProvidedDateEpoch}}</small>
             </b-col>
           </b-row>
