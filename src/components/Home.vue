@@ -26,7 +26,8 @@
               <b-form-input v-model="userProvidedDate" placeholder="Paste an ISO8601 date" size="lg"></b-form-input>
             </b-col>
             <b-col>
-              <h3 class="mt-2"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h3>
+              <h3 class="mt-2"><ISO8601Timestamp :timestamp="userProvidedDate" :showCopyIcon="false"/></h3><br/>
+              <small>{{Math.floor(userProvidedDate.getTime() / 1000)}}</small>
             </b-col>
           </b-row>
 
