@@ -79,7 +79,7 @@ export default {
   computed: {
     userProvidedDateEpoch(){
       if (!this.userProvidedDate) return undefined
-      return Math.floor(userProvidedDate.getTime() / 1000)
+      return Math.floor(this.userProvidedDate.getTime() / 1000)
     },
     timezoneGroups(){
       const momentCountries = moment.tz.countries().map( countryCode => {
